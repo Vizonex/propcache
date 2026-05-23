@@ -56,9 +56,7 @@ class under_cached_property(Generic[_T]):
         try:
             return inst._cache[self.name]  # type: ignore[no-any-return]
         except KeyError:
-            val = self.wrapped(inst)
-            inst._cache[self.name] = val
-            return val
+            return inst._cache.setdefault(self.name, self.wrapped(inst))
 
     def __set__(self, inst: _CacheImpl[Any], value: _T) -> None:
         raise AttributeError("cached property is read-only")
